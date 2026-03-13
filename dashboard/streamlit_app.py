@@ -11,20 +11,22 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+# ── path bootstrap: must be before any local imports ──────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+# ──────────────────────────────────────────────────────────────────────────────
 
-from ai_insights.explanation import generate_explanation
-from config import DASHBOARD_TITLE
-from data_loader.loader import DatasetLoader
-from embeddings.embedding_model import EmbeddingModel
-from matching.ranking import rank_candidates
-from matching.skill_gap import compute_skill_gap
-from nlp.entity_extractor import EntityExtractor
-from nlp.skill_extractor import SkillExtractor
-from resume_parser.parser import ResumeParser
-from utils.helpers import file_stem
+from ai_insights.explanation import generate_explanation  # noqa: E402
+from config import DASHBOARD_TITLE  # noqa: E402
+from data_loader.loader import DatasetLoader  # noqa: E402
+from embeddings.embedding_model import EmbeddingModel  # noqa: E402
+from matching.ranking import rank_candidates  # noqa: E402
+from matching.skill_gap import compute_skill_gap  # noqa: E402
+from nlp.entity_extractor import EntityExtractor  # noqa: E402
+from nlp.skill_extractor import SkillExtractor  # noqa: E402
+from resume_parser.parser import ResumeParser  # noqa: E402
+from utils.helpers import file_stem  # noqa: E402
 
 
 @st.cache_resource

@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT_DIR = Path(__file__).resolve().parent
-DATASETS_DIR = ROOT_DIR.parent / "datasets"
+DATASETS_DIR = ROOT_DIR / "datasets"
 
 SKILLS_DATASET_PATH = DATASETS_DIR / "Skills Dataset" / "technical_skills.csv"
 JOB_POSTINGS_PATH = DATASETS_DIR / "LinkedIn Job Dataset" / "job_postings.csv"
