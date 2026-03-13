@@ -1,6 +1,6 @@
 # AI Resume Screener & Job Matcher
 
-Production-style Python project for parsing resumes, extracting skills/entities, generating embeddings, matching candidates to roles, identifying skill gaps, ranking applicants, and presenting recruiter-ready insights through a Streamlit dashboard.
+Production-style Python project for parsing resumes, extracting skills and entities, generating semantic embeddings, matching candidates to roles, identifying skill gaps, ranking applicants, and presenting recruiter-ready insights through a Streamlit dashboard.
 
 ## GitHub Description (Short)
 
@@ -8,7 +8,17 @@ AI-powered resume screening and job matching system using NLP, sentence embeddin
 
 ## Detailed Documentation
 
-For full technical documentation, architecture, workflows, dataset usage, environment notes, and future improvements, see [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
+For full technical documentation, architecture, workflows, dataset usage, deployment notes, and future improvements, see [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
+
+## Tech Stack
+
+- Python 3.11
+- Streamlit
+- pandas / numpy
+- scikit-learn
+- sentence-transformers (`all-MiniLM-L6-v2`)
+- spaCy with graceful fallback
+- pdfplumber / PyMuPDF
 
 ## Key Features
 
@@ -28,10 +38,18 @@ For full technical documentation, architecture, workflows, dataset usage, enviro
 ```
 project/
 │
+├── .streamlit/
+│   └── config.toml
 ├── app.py
 ├── config.py
+├── runtime.txt
+├── packages.txt
 ├── requirements.txt
 ├── README.md
+├── datasets/
+│   ├── LinkedIn Job Dataset/
+│   ├── Resume/
+│   └── Skills Dataset/
 │
 ├── data_loader/
 │   └── loader.py
@@ -63,7 +81,7 @@ project/
 
 ## Dataset Expectations
 
-This project is designed to work with existing datasets in the parent `datasets/` directory (already present in your workspace):
+This project is configured to use the bundled `project/datasets/` directory so it can run on Streamlit Cloud without depending on files outside the repository.
 
 - Resume dataset (text resumes)
 - LinkedIn job postings and skills mappings
@@ -71,16 +89,6 @@ This project is designed to work with existing datasets in the parent `datasets/
 - Company and industry mapping datasets
 
 No synthetic data generation is required.
-
-## Tech Stack
-
-- Python
-- Streamlit
-- pandas / numpy
-- scikit-learn
-- sentence-transformers
-- spaCy (with graceful fallback in this project)
-- pdfplumber / PyMuPDF
 
 ## Quick Start
 
@@ -95,6 +103,14 @@ pip install -r requirements.txt
 ```bash
 streamlit run dashboard/streamlit_app.py
 ```
+
+## Deployment Notes
+
+- Streamlit Cloud entry file: `dashboard/streamlit_app.py`
+- Streamlit config: `.streamlit/config.toml`
+- Python runtime pin: `runtime.txt`
+- Dataset paths are resolved from `config.py` using `ROOT_DIR / "datasets"`
+- `packages.txt` is intentionally empty because the earlier Linux package workaround caused dependency failures on Streamlit Cloud
 
 ### 3) Optional CLI run
 

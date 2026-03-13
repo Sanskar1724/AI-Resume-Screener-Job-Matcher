@@ -75,6 +75,17 @@ Primary goals of the project:
 7. Rank and explain results
 8. Present results in Streamlit
 
+## Technical Stack Summary
+
+- **Language:** Python 3.11
+- **Frontend:** Streamlit
+- **Data processing:** pandas, numpy
+- **Machine learning utilities:** scikit-learn
+- **Semantic matching:** sentence-transformers using `all-MiniLM-L6-v2`
+- **NLP:** spaCy with heuristic fallback for unsupported environments
+- **Document parsing:** pdfplumber and PyMuPDF
+- **Deployment target:** Streamlit Cloud
+
 ## Module Responsibilities
 
 ### [config.py](../config.py)
@@ -150,11 +161,19 @@ Shared normalization and utility helpers.
 
 ```text
 project/
+├── .streamlit/
+│   └── config.toml
 ├── .gitignore
 ├── README.md
 ├── app.py
 ├── config.py
+├── runtime.txt
+├── packages.txt
 ├── requirements.txt
+├── datasets/
+│   ├── LinkedIn Job Dataset/
+│   ├── Resume/
+│   └── Skills Dataset/
 ├── ai_insights/
 │   └── explanation.py
 ├── dashboard/
@@ -182,7 +201,7 @@ project/
 
 ## 6. Datasets Used
 
-The application relies on datasets stored in the parent `datasets/` directory.
+The application relies on datasets stored inside the repository at `project/datasets/` so the same code works both locally and on Streamlit Cloud.
 
 ### Skills Dataset
 
@@ -216,6 +235,16 @@ The loader enriches job records by combining:
 - company names and contextual metadata
 
 This produces a richer `matching_text` field for more accurate semantic comparison.
+
+## Current Dataset Packaging Strategy
+
+To keep the repository deployable on GitHub and Streamlit Cloud:
+
+- very large raw datasets were not referenced from outside the repo anymore
+- sampled deployable CSVs were added inside `project/datasets/`
+- `job_postings.csv` was reduced to 3000 rows for cloud-friendly usage
+- `Resume.csv` was reduced to 1000 rows for cloud-friendly usage
+- smaller mapping datasets were included as-is
 
 ---
 
@@ -257,6 +286,48 @@ The project combines:
 - semantic alignment from sentence embeddings
 - explicit skill overlap from controlled vocabulary
 - explainability from extracted resume signals
+
+## End-to-End Working Logic
+
+### Step 1: Data ingestion
+
+`DatasetLoader` reads the jobs dataset, job-skill mappings, industry mappings, company metadata, and resume dataset.
+
+### Step 2: Job record enrichment
+
+Each job posting is enriched by joining:
+
+- job title
+- job description
+- skill tags
+- job industries
+- company industries
+- company name
+
+These fields are merged into a stronger `matching_text` representation for semantic comparison.
+
+### Step 3: Resume parsing
+
+Uploaded PDF resumes are parsed into text using `pdfplumber`, with fallback support through `PyMuPDF`.
+
+### Step 4: Skill and entity extraction
+
+The system extracts:
+
+- explicit technical skills from the skill vocabulary
+- education / organization / location / experience signals through entity extraction
+
+### Step 5: Embedding generation
+
+Both resume text and job `matching_text` are converted into dense vectors using the Sentence Transformer model.
+
+### Step 6: Scoring and ranking
+
+The application compares embeddings, computes similarity scores, analyzes skill overlap, and ranks the best candidates or roles.
+
+### Step 7: Explainable output
+
+The dashboard shows score, matched skills, missing skills, skill coverage, charts, and recruiter-readable explanations.
 
 Displayed metrics include:
 
@@ -344,6 +415,21 @@ Additional runtime notes:
 
 - the first launch may download the sentence-transformer model from Hugging Face
 - Windows may show symlink warnings during model caching; they are usually non-fatal
+
+## Deployment Notes
+
+The project is prepared for Streamlit Cloud with the following files:
+
+- [../.streamlit/config.toml](../.streamlit/config.toml) for Streamlit settings and theme
+- [../runtime.txt](../runtime.txt) to pin Python 3.11
+- [../requirements.txt](../requirements.txt) for Python dependencies
+- [../packages.txt](../packages.txt), which is intentionally empty because previous Linux system package entries caused installation failures on Streamlit Cloud
+
+Important deployment choices already implemented:
+
+- datasets are bundled inside the repository
+- `config.py` resolves data from `ROOT_DIR / "datasets"`
+- local imports in `streamlit_app.py` are placed below the `sys.path` bootstrap for deployment-safe imports
 
 ---
 
