@@ -6,6 +6,10 @@ Production-style Python project for parsing resumes, extracting skills/entities,
 
 AI-powered resume screening and job matching system using NLP, sentence embeddings, skill-gap analysis, and an interactive Streamlit recruiter dashboard.
 
+## Detailed Documentation
+
+For full technical documentation, architecture, workflows, dataset usage, environment notes, and future improvements, see [docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
+
 ## Key Features
 
 - Parse resume PDFs with robust text extraction (`pdfplumber` + fallback)

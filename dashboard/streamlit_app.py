@@ -1,16 +1,6 @@
 """Streamlit recruiter dashboard for resume screening and candidate ranking."""
 
 from __future__ import annotations
-from utils.helpers import file_stem
-from resume_parser.parser import ResumeParser
-from nlp.skill_extractor import SkillExtractor
-from nlp.entity_extractor import EntityExtractor
-from matching.skill_gap import compute_skill_gap
-from matching.ranking import rank_candidates
-from embeddings.embedding_model import EmbeddingModel
-from data_loader.loader import DatasetLoader
-from config import DASHBOARD_TITLE
-from ai_insights.explanation import generate_explanation
 
 import sys
 from collections import Counter
@@ -23,7 +13,18 @@ import streamlit as st
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
-    sys.path.append(str(PROJECT_ROOT))
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from ai_insights.explanation import generate_explanation
+from config import DASHBOARD_TITLE
+from data_loader.loader import DatasetLoader
+from embeddings.embedding_model import EmbeddingModel
+from matching.ranking import rank_candidates
+from matching.skill_gap import compute_skill_gap
+from nlp.entity_extractor import EntityExtractor
+from nlp.skill_extractor import SkillExtractor
+from resume_parser.parser import ResumeParser
+from utils.helpers import file_stem
 
 
 @st.cache_resource
